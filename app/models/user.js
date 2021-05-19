@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema({
         required: true,
         trim: true,
         validate(value) {
-            if (value.length < 10 || value.length > 10) {
+            if (value.length < 10 ) {
                 throw new Error("Number Cannot less than or greater than 10")
             }
         }

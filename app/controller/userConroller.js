@@ -61,9 +61,10 @@ const userController = () => {
         async allUser(req,res)
         {
             try {
-                const allUsers =await User.aggregate({$match:{status:1}})
-                console.log(allUsers)
-                res.status(200).send()
+                const allUsers =await User.find({status:1}).select('name email').exec()
+                
+                // console.log(allUsers)
+                res.status(200).send(allUsers)
             } catch (error) {
                 res.status(500).send()   
             }
