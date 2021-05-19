@@ -7,7 +7,7 @@ const userController = () => {
             res.status(200).send({ "name": "manish kumar" })
         },
         async register(req, res) {
-            // console.log(req.body)
+            console.log(req.body)
 
             try {
 
