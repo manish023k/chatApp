@@ -50,6 +50,11 @@ const userSchema = mongoose.Schema({
         trim: true,
         default: ""
     },
+    status:{
+        type: Number,
+        trim: true,
+        default: 0
+    },
     tokens: [
         {
             token: {
@@ -115,10 +120,10 @@ userSchema.pre('save', async function (next) {
 })
 
 
-
-
-
 const User = mongoose.model('User', userSchema)
+
+
+
 
 
 
@@ -157,6 +162,6 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 module.exports = {
-    User,
-    sendEmail
+    User
+    // sendEmail
 }

@@ -1,4 +1,4 @@
-const {User,sendEmail} = require('../models/user')
+const {User} = require('../models/user')
 // const auth= require('../middleware/auth')
 const userController = () => {
 
@@ -12,11 +12,11 @@ const userController = () => {
             try {
 
                 const user = new User(req.body)
+                // sendEmail(req)
                 await user.save()
-                sendEmail(req)
                 const token = await user.genToken();
-                sendEmail(req)
-                res.status(200).send({ user:user.getHide(), token })
+                // sendEmail(req)
+                res.status(200).send({ user:user.getHide() })
             } catch (error) {
                 res.status(400).send({
                     "error": error.message
@@ -28,6 +28,7 @@ const userController = () => {
             try {
                 // console.log(req.body)
                 const user = await User.findByCredentials(req.body.email, req.body.password)
+                user.status = 1
                 const token = await user.genToken();
                 res.status(200).send({ user:user.getHide(),token })
 
@@ -56,7 +57,16 @@ const userController = () => {
           } catch (error) {
            res.status(500).send()   
           }
-
+        },
+        async allUser(req,res)
+        {
+            try {
+                const allUsers =await User.aggregate({$match:{status:1}})
+                console.log(allUsers)
+                res.status(200).send()
+            } catch (error) {
+                res.status(500).send()   
+            }
         }
     }
 }
