@@ -1,4 +1,5 @@
 const userController = require('../controller/userConroller')
+const messageController = require('../controller/messageController')
 const auth = require('../middleware/auth')
 const cors = require('cors');
 const routerInit =(app)=>{
@@ -16,6 +17,8 @@ app.use(cors());
 
     app.post('/register',userController().register)
     app.post('/login',userController().login)
+    app.post('/msgsave',messageController.saveMessage)
+    app.get('/getHistory',messageController.getHistory)
 }
 
 module.exports = routerInit

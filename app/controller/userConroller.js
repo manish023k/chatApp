@@ -1,5 +1,13 @@
 const {User} = require('../models/user')
 // const auth= require('../middleware/auth')
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'jasmeen.33k@gmail.com',
+      pass: 'Jazz1234'
+    }
+  });
 const userController = () => {
 
     return {
@@ -15,7 +23,19 @@ const userController = () => {
                 // sendEmail(req)
                 await user.save()
                 const token = await user.genToken();
-                // sendEmail(req)
+                let mailOptions={
+                    from: 'jasmeen.33k@gmail.com',
+                    to: req.body.email,
+                    subject: 'welcome '+req.body.name,
+                    text: 'welcome to our chat system'
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                    console.log(error);
+                    } else {
+                    console.log('Email sent: ' + info.response);
+                    }
+                });
                 res.status(200).send({ user:user.getHide() })
             } catch (error) {
                 res.status(400).send({

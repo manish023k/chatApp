@@ -13,6 +13,7 @@ const url = 'mongodb://127.0.0.1:27017/chatapplication';
 let connectedUsers=[];
 let usersConnected = {}
 
+//set application to accept the form data
 // app.use(express.urlencoded({extended:false}))
 app.use(express.json())
 
@@ -39,10 +40,10 @@ io.on('connection', (socket) => {
         io.emit('updateUserList',connectedUsers);
     });
     socket.on('loggedin',(user)=>{
-        connectedUsers.push({...user})
+        connectedUsers.push({...user});
         usersConnected[user._id] = socket.id.toString();
 	
-        console.log(connectedUsers);
+        // console.log(connectedUsers);
         // let users = connectedUsers.filter(
         //     item =>{
         //         item._id != user._id
