@@ -8,9 +8,9 @@ var io = require('socket.io')(server,{cors: {
   }});
 
 
-const port = 8000
+const port = process.env.PORT || 8000
+const socketAuth = require('./app/middleware/socket.js')
 const url = 'mongodb://127.0.0.1:27017/chatapplication';
-let connectedUsers=[];
 let usersConnected = {}
 
 //set application to accept the form data
@@ -25,43 +25,22 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCrea
 const routerInit = require('./app/router/web')
 routerInit(app);
 
+io.use(socketAuth)
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect',()=>{
         console.log("a user disconnected");
-        connectedUsers = connectedUsers.filter(
-            (item)=>{
-                item.socketId != socket.id;
-            }
-        );
-        Object.keys(usersConnected).forEach(key => {
-            if (usersConnected[key] == socket.id) delete usersConnected[key];
-        })
-        io.emit('updateUserList',connectedUsers);
+//         Object.keys(usersConnected).forEach(key => {
+//             if (usersConnected[key] == socket.id) delete usersConnected[key];
+//         })
+        io.emit('updateUserList',io.sockets.clients());
     });
     socket.on('loggedin',(user)=>{
-        connectedUsers.push({...user});
         usersConnected[user._id] = socket.id.toString();
-	
-        // console.log(connectedUsers);
-        // let users = connectedUsers.filter(
-        //     item =>{
-        //         item._id != user._id
-        //     }
-        // )
-        io.emit('updateUserList',connectedUsers);
+        io.emit('updateUserList',io.sockets.clients());
     })
     socket.on('chatMessage', function(data){
-        console.log(data.receiver)
-        // user = connectedUsers.filter(
-        //     (item)=>{
-        //         if(item._id == data.receiver){
-        //             console.log(item.socketId);
-        //             socket.to(item.socketId).emit('message', data);
-        //             console.log(data.message)
-        //         }
-        //     }
-        // );
+//         console.log(data.receiver)
         socket.to(usersConnected[data.receiver]).emit('message', data);
      });
     
